@@ -1,24 +1,18 @@
 import socket
 import requests
 from colorama import init, Fore, Style
-from pyfiglet import Figlet
 
-def display_banner():
-    """
-    Pyfiglet ile "ipTracer" metnini büyük harflerle banner şeklinde yazdırır.
-    """
-    fig = Figlet(font="slant")  # Farklı fontları da deneyebilirsiniz.
-    banner = fig.renderText("ipTracer")
-    print(Fore.CYAN + banner + Style.RESET_ALL)
+# Colorama'yı başlatıyoruz (otomatik reset sayesinde stil sonrasında sıfırlanır)
+init(autoreset=True)
 
 def get_domain_info(domain):
     """
-    Verilen domain'in IP adresini çözümler ve ip-api.com üzerinden detaylı bilgileri sorgular.
+    Belirtilen domain'in IP adresini çözümler ve ip-api.com üzerinden detaylı bilgiler alır.
     """
     try:
         ip_address = socket.gethostbyname(domain)
     except Exception as e:
-        print(f"{Fore.RED}'{domain}' domain çözümlenemedi: {e}{Style.RESET_ALL}")
+        print(f"{Fore.RED}'{domain}' domain adresi çözümlenemedi:{Style.RESET_ALL} {e}")
         return None
 
     url = f"http://ip-api.com/json/{ip_address}"
@@ -26,22 +20,23 @@ def get_domain_info(domain):
         response = requests.get(url)
         data = response.json()
     except Exception as e:
-        print(f"{Fore.RED}IP bilgileri alınırken hata oluştu: {e}{Style.RESET_ALL}")
+        print(f"{Fore.RED}IP bilgileri alınırken hata oluştu:{Style.RESET_ALL} {e}")
         data = None
 
     return ip_address, data
 
 def get_ip_info(ip):
     """
-    Belirtilen IP adresi için ip-api üzerinden detaylı bilgileri sorgular.
+    Belirtilen IP adresi için ip-api.com üzerinden detaylı bilgi sorgular.
     """
     url = f"http://ip-api.com/json/{ip}"
     try:
         response = requests.get(url)
         data = response.json()
     except Exception as e:
-        print(f"{Fore.RED}IP bilgileri alınırken hata oluştu: {e}{Style.RESET_ALL}")
+        print(f"{Fore.RED}IP bilgileri alınırken hata oluştu:{Style.RESET_ALL} {e}")
         data = None
+
     return data
 
 def get_my_ip():
@@ -53,55 +48,55 @@ def get_my_ip():
         response = requests.get(url)
         data = response.json()
     except Exception as e:
-        print(f"{Fore.RED}Kendi IP adresiniz alınırken hata oluştu: {e}{Style.RESET_ALL}")
+        print(f"{Fore.RED}Kendi IP adresiniz alınırken hata oluştu:{Style.RESET_ALL} {e}")
         data = None
+
     return data
 
 def main():
-    # Colorama'yı başlatıyoruz (autoreset sayesinde stil her print sonrasında sıfırlanır)
-    init(autoreset=True)
-    
-    display_banner()
-    print(Fore.YELLOW + "ipTracer'a hoşgeldiniz!" + Style.RESET_ALL)
-    
+    print(f"{Fore.CYAN}{Style.BRIGHT}===== Python Multi-tool: Site & IP Bilgi Aracı ====={Style.RESET_ALL}")
     while True:
-        print(f"\n{Fore.BLUE}Aşağıdaki seçeneklerden birini seçin:{Style.RESET_ALL}")
-        print("1. Bir sitenin IP ve ek bilgilerini al")
-        print("2. Belirli bir IP hakkında bilgi al")
-        print("3. Kendi genel IP'nizi öğren")
-        print("4. Çıkış")
+        print(f"\n{Fore.YELLOW}Lütfen aşağıdaki seçeneklerden birini seçin:")
+        print("1. Bir sitenin IP adresi ve ekstra bilgilerini al")
+        print("2. Belirli bir IP adresi hakkında bilgi al")
+        print("3. Kendi genel IP adresini öğren")
+        print("4. Çıkış" + Style.RESET_ALL)
         
-        choice = input(Fore.GREEN + "Seçiminiz (1-4): " + Style.RESET_ALL).strip()
-        
+        choice = input(f"{Fore.GREEN}Seçiminiz (1-4): {Style.RESET_ALL}").strip()
+
         if choice == '1':
-            domain = input(Fore.GREEN + "Domain giriniz (örnek: google.com): " + Style.RESET_ALL).strip()
+            domain = input(f"{Fore.GREEN}IP bilgilerini almak istediğiniz sitenin domain'ini girin (örnek: google.com): {Style.RESET_ALL}").strip()
             result = get_domain_info(domain)
             if result:
                 ip, info = result
                 print(f"\n{Fore.CYAN}Domain: {domain}{Style.RESET_ALL}")
                 print(f"{Fore.CYAN}IP Adresi: {ip}{Style.RESET_ALL}")
                 if info:
-                    print(Fore.MAGENTA + "Ek Bilgiler:" + Style.RESET_ALL)
+                    print(f"{Fore.MAGENTA}Ek Bilgiler:{Style.RESET_ALL}")
                     for key, value in info.items():
-                        print(f"{Fore.WHITE}{key}: {value}{Style.RESET_ALL}")
+                        print(f"  {Fore.WHITE}{key}: {value}{Style.RESET_ALL}")
+
         elif choice == '2':
-            ip = input(Fore.GREEN + "IP giriniz: " + Style.RESET_ALL).strip()
+            ip = input(f"{Fore.GREEN}Bilgilerini almak istediğiniz IP adresini girin: {Style.RESET_ALL}").strip()
             info = get_ip_info(ip)
             if info:
                 print(f"\n{Fore.CYAN}IP: {ip} bilgileri:{Style.RESET_ALL}")
                 for key, value in info.items():
-                    print(f"{Fore.WHITE}{key}: {value}{Style.RESET_ALL}")
+                    print(f"  {Fore.WHITE}{key}: {value}{Style.RESET_ALL}")
+
         elif choice == '3':
-            info = get_my_ip()
-            if info:
+            my_ip = get_my_ip()
+            if my_ip:
                 print(f"\n{Fore.CYAN}Kendi Genel IP Adresiniz:{Style.RESET_ALL}")
-                for key, value in info.items():
-                    print(f"{Fore.WHITE}{key}: {value}{Style.RESET_ALL}")
+                for key, value in my_ip.items():
+                    print(f"  {Fore.WHITE}{key}: {value}{Style.RESET_ALL}")
+
         elif choice == '4':
-            print(Fore.YELLOW + "Çıkılıyor. İyi günler!" + Style.RESET_ALL)
+            print(f"{Fore.YELLOW}Program kapatılıyor. İyi günler!{Style.RESET_ALL}")
             break
+
         else:
-            print(Fore.RED + "Geçersiz seçim, lütfen tekrar deneyin." + Style.RESET_ALL)
+            print(f"{Fore.RED}Geçersiz seçim! Lütfen tekrar deneyin.{Style.RESET_ALL}")
 
 if __name__ == '__main__':
     main()
