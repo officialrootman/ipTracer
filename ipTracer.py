@@ -68,7 +68,7 @@ def print_geo_info(data):
         print(f"{Fore.RED}Coğrafi konum bilgileri alınamadı.{Style.RESET_ALL}")
 
 def main():
-    print(f"{Fore.CYAN}{Style.BRIGHT}===== Python Multi-tool: Site, IP ve Coğrafi Konum Bilgi Aracı ====={Style.RESET_ALL}")
+    print(f"{Fore.CYAN}{Style.BRIGHT}===== ipTracer ====={Style.RESET_ALL}")
     while True:
         print(f"\n{Fore.YELLOW}Lütfen aşağıdaki seçeneklerden birini seçin:")
         print("1. Bir sitenin IP adresi, ekstra bilgileri ve coğrafi konumunu al")
